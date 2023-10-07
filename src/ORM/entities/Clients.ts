@@ -14,6 +14,6 @@ export default class Client {
   @Column({ type: "varchar", length: 18 })
   ContactNumber: string;
 
-  @Column({ type: "varchar", length: 100 })
+  @Column('text')
   Address: string;
 }
