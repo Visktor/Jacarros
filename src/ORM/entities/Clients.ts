@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity,  JoinColumn,  OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import Payments from "./Payments";
+import Rentals from "./Rentals";
 
 @Entity()
 export default class Client {
@@ -16,4 +18,12 @@ export default class Client {
 
   @Column('text')
   Address: string;
+
+  @OneToMany(() => Payments, p => p.PaymentClient)
+  @JoinColumn({ referencedColumnName: 'ClientID', name: 'ClientID'})
+  ClientPayments: Payments[]
+
+  @OneToMany(() => Rentals, r => r.RentalClient)
+  @JoinColumn({referencedColumnName: 'ClientID', name: 'ClientID'})
+  ClientRentals: Rentals[]
 }

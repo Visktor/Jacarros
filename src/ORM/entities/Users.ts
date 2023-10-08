@@ -1,5 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import Profile from "./Profiles";
+import Stores from "./Stores";
 
 @Entity()
 export default class Users {
@@ -18,4 +19,8 @@ export default class Users {
   @ManyToOne(() => Profile, (p) => p.ProfileUsers)
   @JoinColumn({ referencedColumnName: 'ProfileID', name: 'ProfileID'})
   UserProfile: Profile
+
+  @ManyToOne(() => Stores, s => s.StoreUsers)
+  @JoinColumn({ referencedColumnName: 'StoreID', name: "StoreID"})
+  UserStore: Stores
 }

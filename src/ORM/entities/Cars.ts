@@ -1,4 +1,13 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import Rentals from "./Rentals";
+import Stores from "./Stores";
 
 @Entity()
 export default class Cars {
@@ -23,6 +32,14 @@ export default class Cars {
   @Column("double precision")
   PricePerMonth: number;
 
-  @Column('boolean')
+  @Column("boolean")
   IsAvailable: boolean;
+
+  @OneToMany(() => Rentals, (r) => r.RentalCar)
+  @JoinColumn({ referencedColumnName: "CarID", name: "CarID" })
+  CarRentals: Rentals[];
+
+  @ManyToOne(() => Stores, s => s.StoreCars)
+  @JoinColumn({ referencedColumnName: 'StoreID', name: 'StoreID'})
+  CarStore: Stores
 }

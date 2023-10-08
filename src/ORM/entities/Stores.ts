@@ -1,4 +1,12 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import Users from "./Users";
+import Cars from "./Cars";
 
 @Entity()
 export default class Stores {
@@ -11,6 +19,14 @@ export default class Stores {
   @Column({ type: "varchar", length: 100, nullable: true })
   Email: string;
 
-  @Column('text')
+  @Column("text")
   Address: string;
+
+  @OneToMany(() => Users, (u) => u.UserStore)
+  @JoinColumn({ referencedColumnName: "StoreID", name: "StoreID" })
+  StoreUsers: Users[];
+
+  @OneToMany(() => Cars, (c) => c.CarStore)
+  @JoinColumn({ referencedColumnName: "StoreID", name: "StoreID" })
+  StoreCars: Cars[];
 }
