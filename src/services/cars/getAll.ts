@@ -1,8 +1,8 @@
 import { AppDataSource } from "../../database/config/DataSource";
 import Cars from "../../database/entities/Cars";
-import { AppResponse } from "../../shared/types/global";
+import { BackendResponse } from "../../shared/types/global";
 
-export default function getAllCarsService(): AppResponse {
+export default function getAllCarsService(): BackendResponse {
   try {
     const carsTable = AppDataSource.getRepository(Cars);
     const result = carsTable.find();

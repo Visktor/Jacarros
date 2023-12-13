@@ -1,4 +1,4 @@
-export type AppResponse =
+export type BackendResponse =
   | {
       success: true;
       data: unknown;
