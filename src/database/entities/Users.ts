@@ -21,6 +21,9 @@ export default class Users {
   @Column({ type: "varchar", length: 100 })
   Email: string;
 
+  @Column({ type: "varchar", length: 12 })
+  Password: string;
+
   @Column("uuid")
   ProfileID: string;
 
