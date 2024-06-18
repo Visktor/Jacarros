@@ -23,10 +23,10 @@ export default class Stores {
   Address: string;
 
   @OneToMany(() => Users, (u) => u.UserStore)
-  @JoinColumn({ referencedColumnName: "StoreID", name: "StoreID" })
+  @JoinColumn({ referencedColumnName: "FK_StoreID", name: "StoreID" })
   StoreUsers: Users[];
 
   @OneToMany(() => Cars, (c) => c.CarStore)
-  @JoinColumn({ referencedColumnName: "StoreID", name: "StoreID" })
+  @JoinColumn({ referencedColumnName: "FK_StoreID", name: "StoreID" })
   StoreCars: Cars[];
 }

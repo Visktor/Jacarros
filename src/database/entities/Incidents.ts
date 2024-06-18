@@ -7,7 +7,7 @@ export default class Incidents {
   IncidentID: string;
 
   @Column("uuid")
-  RentalID: string;
+  FK_RentalID: string;
 
   @Column("text")
   Description: string;
@@ -16,6 +16,6 @@ export default class Incidents {
   Cost: number;
 
   @ManyToOne(() => Rentals, r => r.RentalIncidents)
-  @JoinColumn({ referencedColumnName: 'RentalID', name: "RentalID"})
+  @JoinColumn({ referencedColumnName: 'RentalID', name: "FK_RentalID"})
   Rental: Rentals
 }

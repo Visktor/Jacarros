@@ -1,29 +1,25 @@
+import getUsersById from "#services/users/getById";
+import zodError400 from "#shared/utils/zodStatus400Error";
 import { Router } from "express";
-import zodValidateObject from "../shared/validation/zodObjectValidator";
 import { z } from "zod";
-import usersGetOne from "../services/users/getone";
 
 const userRoute = Router();
 
-userRoute.get("/users/:id", async (req, res) => {
-  const { id } = req.params;
+userRoute.get("/users/get-by-id", async (req, res) => {
+  const frontendAlert = "Houve um erro ao buscar usuário.";
+  const { ids } = req.query;
 
-  const validationResult = zodValidateObject(
-    {
-      id: id,
-    },
-    {
-      id: z.coerce.string().uuid(),
-    }
-  );
+  const validationResult = z.string().uuid().array().safeParse(ids);
 
   if (!validationResult.success) {
-    return res.status(400).json({
+    zodError400(validationResult.error, req.url);
+    return res.json({
       success: false,
-      error: "Invalid request structure.",
+      message: frontendAlert,
+      error: validationResult.error.issues,
     });
   }
 
-  const result = await usersGetOne(validationResult.data.id);
-  return res.json(result);
+  const serviceResult = await getUsersById(validationResult.data);
+  return res.status(serviceResult.success ? 200 : 500).json(serviceResult);
 });

@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import Payments_Rentals from "./Payments_Rentals";
-import Client from "./Clients";
+import Clients from "./Clients";
 
 @Entity()
 export default class Payments {
@@ -15,7 +15,7 @@ export default class Payments {
   PaymentID: string;
 
   @Column("uuid")
-  ClientID: string;
+  FK_ClientID: string;
 
   @Column({ type: "uuid", nullable: true })
   RentalID: string;
@@ -27,10 +27,10 @@ export default class Payments {
   PaymentDate: Date;
 
   @OneToMany(() => Payments_Rentals, (pr) => pr.Payment)
-  @JoinColumn({ referencedColumnName: "RentalID", name: "RentalID" })
+  @JoinColumn({ referencedColumnName: "FK_RentalID", name: "RentalID" })
   PaymentRentals: Payments_Rentals[];
 
-  @ManyToOne(() => Client, c => c.ClientPayments)
-  @JoinColumn({ referencedColumnName: 'ClientID', name: "ClientID"})
-  PaymentClient: Client
+  @ManyToOne(() => Clients, c => c.ClientPayments)
+  @JoinColumn({ referencedColumnName: 'ClientID', name: "FK_ClientID"})
+  PaymentClient: Clients
 }

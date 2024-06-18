@@ -8,7 +8,7 @@ import {
 } from "typeorm";
 import Payments_Rentals from "./Payments_Rentals";
 import Incidents from "./Incidents";
-import Client from "./Clients";
+import Clients from "./Clients";
 import Cars from "./Cars";
 import Users from "./Users";
 
@@ -18,13 +18,13 @@ export default class Rentals {
   RentalID: string;
 
   @Column("uuid")
-  CarID: string;
+  FK_CarID: string;
 
   @Column("uuid")
-  UserID: string;
+  FK_UserID: string;
 
   @Column("uuid")
-  ClientID: string;
+  FK_ClientID: string;
 
   @Column("date")
   StartDate: Date;
@@ -36,22 +36,22 @@ export default class Rentals {
   TotalAmount: number;
 
   @ManyToOne(() => Cars, (c) => c.CarRentals)
-  @JoinColumn({ referencedColumnName: "CarID", name: "CarID" })
+  @JoinColumn({ referencedColumnName: "CarID", name: "FK_CarID" })
   RentalCar: Cars;
 
-  @ManyToOne(() => Client, (c) => c.ClientRentals)
-  @JoinColumn({ referencedColumnName: "ClientID", name: "ClientID" })
-  RentalClient: Client;
+  @ManyToOne(() => Clients, (c) => c.ClientRentals)
+  @JoinColumn({ referencedColumnName: "ClientID", name: "FK_ClientID" })
+  RentalClient: Clients;
 
   @ManyToOne(() => Users, (u) => u.UserRentals)
-  @JoinColumn({ referencedColumnName: "UserID", name: "UserID" })
+  @JoinColumn({ referencedColumnName: "UserID", name: "FK_UserID" })
   RentalUser: Users;
 
   @OneToMany(() => Payments_Rentals, (pr) => pr.Rental)
-  @JoinColumn({ referencedColumnName: "RentalID", name: "RentalID" })
+  @JoinColumn({ referencedColumnName: "FK_RentalID", name: "RentalID" })
   RentalPayments: Payments_Rentals[];
 
   @OneToMany(() => Incidents, (i) => i.Rental)
-  @JoinColumn({ referencedColumnName: "RentalID", name: "RentalID" })
+  @JoinColumn({ referencedColumnName: "FK_RentalID", name: "RentalID" })
   RentalIncidents: Incidents[];
 }

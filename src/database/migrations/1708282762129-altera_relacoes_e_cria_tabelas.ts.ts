@@ -1,0 +1,120 @@
+import { MigrationInterface, QueryRunner } from "typeorm";
+
+export class AlteraRelacoesECriaTabelas1708282762129 implements MigrationInterface {
+    name = 'AlteraRelacoesECriaTabelas.ts1708282762129'
+
+    public async up(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`ALTER TABLE "users" DROP CONSTRAINT "FK_a02a3246eccebb522baf4929b03"`);
+        await queryRunner.query(`ALTER TABLE "users" DROP CONSTRAINT "FK_0c9e08eddf6030cf2fb252f4651"`);
+        await queryRunner.query(`ALTER TABLE "payments" DROP CONSTRAINT "FK_e2e30f654b7ae3a7c143863044f"`);
+        await queryRunner.query(`ALTER TABLE "payments_rentals" DROP CONSTRAINT "FK_a54877c278be58722d59183d062"`);
+        await queryRunner.query(`ALTER TABLE "payments_rentals" DROP CONSTRAINT "FK_33d33e03fbe38e07de52855a82b"`);
+        await queryRunner.query(`ALTER TABLE "incidents" DROP CONSTRAINT "FK_e639cd6de57c21662d79c1030c8"`);
+        await queryRunner.query(`ALTER TABLE "rentals" DROP CONSTRAINT "FK_14065c82a4b2e241b70f5f33924"`);
+        await queryRunner.query(`ALTER TABLE "rentals" DROP CONSTRAINT "FK_a8643c44988d30cfcb29b6ff630"`);
+        await queryRunner.query(`ALTER TABLE "rentals" DROP CONSTRAINT "FK_50341809270b49a1763d2e93c2e"`);
+        await queryRunner.query(`ALTER TABLE "cars" DROP CONSTRAINT "FK_63babc72ff43ced36cfb15e9c97"`);
+        await queryRunner.query(`ALTER TABLE "payments" RENAME COLUMN "ClientID" TO "FK_ClientID"`);
+        await queryRunner.query(`ALTER TABLE "incidents" RENAME COLUMN "RentalID" TO "FK_RentalID"`);
+        await queryRunner.query(`CREATE TABLE "discounts" ("DiscountID" SERIAL NOT NULL, "DurationStart" date NOT NULL, "DurationEnd" date NOT NULL, "Type" smallint NOT NULL, "Value" double precision NOT NULL, CONSTRAINT "PK_96df318b5d8a1275a3b3203bf15" PRIMARY KEY ("DiscountID"))`);
+        await queryRunner.query(`CREATE TABLE "sales" ("SaleID" SERIAL NOT NULL, "FK_CarID" uuid NOT NULL, "FinalPrice" double precision NOT NULL, "FK_DiscountID" uuid NOT NULL, "Date" date NOT NULL, "FK_UserID" uuid NOT NULL, "FK_ClientID" uuid NOT NULL, CONSTRAINT "PK_16d9c12d69ef0429d974f51e703" PRIMARY KEY ("SaleID"))`);
+        await queryRunner.query(`CREATE TABLE "clients" ("ClientID" uuid NOT NULL DEFAULT uuid_generate_v4(), "FullName" character varying(100) NOT NULL, "Email" character varying(100) NOT NULL, "ContactNumber" character varying(18) NOT NULL, "Address" text NOT NULL, CONSTRAINT "PK_2e6290f95aaa60226899d7f8984" PRIMARY KEY ("ClientID"))`);
+        await queryRunner.query(`ALTER TABLE "users" DROP COLUMN "ProfileID"`);
+        await queryRunner.query(`ALTER TABLE "users" DROP COLUMN "StoreID"`);
+        await queryRunner.query(`ALTER TABLE "payments_rentals" DROP CONSTRAINT "PK_f8879a3eebd00791241d3b07d62"`);
+        await queryRunner.query(`ALTER TABLE "payments_rentals" ADD CONSTRAINT "PK_33d33e03fbe38e07de52855a82b" PRIMARY KEY ("PaymentID")`);
+        await queryRunner.query(`ALTER TABLE "payments_rentals" DROP COLUMN "RentalID"`);
+        await queryRunner.query(`ALTER TABLE "payments_rentals" DROP CONSTRAINT "PK_33d33e03fbe38e07de52855a82b"`);
+        await queryRunner.query(`ALTER TABLE "payments_rentals" DROP COLUMN "PaymentID"`);
+        await queryRunner.query(`ALTER TABLE "rentals" DROP COLUMN "CarID"`);
+        await queryRunner.query(`ALTER TABLE "rentals" DROP COLUMN "UserID"`);
+        await queryRunner.query(`ALTER TABLE "rentals" DROP COLUMN "ClientID"`);
+        await queryRunner.query(`ALTER TABLE "cars" DROP COLUMN "StoreID"`);
+        await queryRunner.query(`ALTER TABLE "users" ADD "Password" character varying(12) NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "users" ADD "FK_ProfileID" uuid NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "users" ADD "FK_StoreID" uuid NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "payments_rentals" ADD "FK_RentalID" uuid NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "payments_rentals" ADD CONSTRAINT "PK_4c1c8c31fcb0475896e715dffeb" PRIMARY KEY ("FK_RentalID")`);
+        await queryRunner.query(`ALTER TABLE "payments_rentals" ADD "FK_PaymentID" uuid NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "payments_rentals" DROP CONSTRAINT "PK_4c1c8c31fcb0475896e715dffeb"`);
+        await queryRunner.query(`ALTER TABLE "payments_rentals" ADD CONSTRAINT "PK_73485332a7ced20fee0a54e5931" PRIMARY KEY ("FK_RentalID", "FK_PaymentID")`);
+        await queryRunner.query(`ALTER TABLE "rentals" ADD "FK_CarID" uuid NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "rentals" ADD "FK_UserID" uuid NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "rentals" ADD "FK_ClientID" uuid NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "cars" ADD "SellingPrice" double precision`);
+        await queryRunner.query(`ALTER TABLE "cars" ADD "FK_StoreID" uuid NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "cars" ADD "FK_DiscountID" integer NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "cars" ADD "FK_SaleID" uuid NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "users" ADD CONSTRAINT "FK_33eb0d4b81a4b5c5d21943a093b" FOREIGN KEY ("FK_ProfileID") REFERENCES "profile"("ProfileID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "users" ADD CONSTRAINT "FK_87f37b474cc2a38ab61a74a14e3" FOREIGN KEY ("FK_StoreID") REFERENCES "stores"("StoreID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "sales" ADD CONSTRAINT "FK_52d836d024c1264565aec3e9c79" FOREIGN KEY ("FK_UserID") REFERENCES "users"("UserID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "sales" ADD CONSTRAINT "FK_2ccf487009bde9bfb49e39c4300" FOREIGN KEY ("FK_ClientID") REFERENCES "clients"("ClientID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "payments" ADD CONSTRAINT "FK_1fa81c066cb6de188dccb74749c" FOREIGN KEY ("FK_ClientID") REFERENCES "clients"("ClientID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "payments_rentals" ADD CONSTRAINT "FK_4c1c8c31fcb0475896e715dffeb" FOREIGN KEY ("FK_RentalID") REFERENCES "rentals"("RentalID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "payments_rentals" ADD CONSTRAINT "FK_87347f82da688fae0aafdbe81b2" FOREIGN KEY ("FK_PaymentID") REFERENCES "payments"("PaymentID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "incidents" ADD CONSTRAINT "FK_34c63c2893db14374877ed24f22" FOREIGN KEY ("FK_RentalID") REFERENCES "rentals"("RentalID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "rentals" ADD CONSTRAINT "FK_95e777f21707c900620ba0153ba" FOREIGN KEY ("FK_CarID") REFERENCES "cars"("CarID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "rentals" ADD CONSTRAINT "FK_cd62d846ef9b3644611b57dc77d" FOREIGN KEY ("FK_ClientID") REFERENCES "clients"("ClientID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "rentals" ADD CONSTRAINT "FK_6e76645a8fcd55fd1017627574f" FOREIGN KEY ("FK_UserID") REFERENCES "users"("UserID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "cars" ADD CONSTRAINT "FK_c80346697d07bd474ef5b00df30" FOREIGN KEY ("FK_StoreID") REFERENCES "stores"("StoreID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "cars" ADD CONSTRAINT "FK_57d0488ffdab26506e65733d24a" FOREIGN KEY ("FK_DiscountID") REFERENCES "discounts"("DiscountID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+    }
+
+    public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`ALTER TABLE "cars" DROP CONSTRAINT "FK_57d0488ffdab26506e65733d24a"`);
+        await queryRunner.query(`ALTER TABLE "cars" DROP CONSTRAINT "FK_c80346697d07bd474ef5b00df30"`);
+        await queryRunner.query(`ALTER TABLE "rentals" DROP CONSTRAINT "FK_6e76645a8fcd55fd1017627574f"`);
+        await queryRunner.query(`ALTER TABLE "rentals" DROP CONSTRAINT "FK_cd62d846ef9b3644611b57dc77d"`);
+        await queryRunner.query(`ALTER TABLE "rentals" DROP CONSTRAINT "FK_95e777f21707c900620ba0153ba"`);
+        await queryRunner.query(`ALTER TABLE "incidents" DROP CONSTRAINT "FK_34c63c2893db14374877ed24f22"`);
+        await queryRunner.query(`ALTER TABLE "payments_rentals" DROP CONSTRAINT "FK_87347f82da688fae0aafdbe81b2"`);
+        await queryRunner.query(`ALTER TABLE "payments_rentals" DROP CONSTRAINT "FK_4c1c8c31fcb0475896e715dffeb"`);
+        await queryRunner.query(`ALTER TABLE "payments" DROP CONSTRAINT "FK_1fa81c066cb6de188dccb74749c"`);
+        await queryRunner.query(`ALTER TABLE "sales" DROP CONSTRAINT "FK_2ccf487009bde9bfb49e39c4300"`);
+        await queryRunner.query(`ALTER TABLE "sales" DROP CONSTRAINT "FK_52d836d024c1264565aec3e9c79"`);
+        await queryRunner.query(`ALTER TABLE "users" DROP CONSTRAINT "FK_87f37b474cc2a38ab61a74a14e3"`);
+        await queryRunner.query(`ALTER TABLE "users" DROP CONSTRAINT "FK_33eb0d4b81a4b5c5d21943a093b"`);
+        await queryRunner.query(`ALTER TABLE "cars" DROP COLUMN "FK_SaleID"`);
+        await queryRunner.query(`ALTER TABLE "cars" DROP COLUMN "FK_DiscountID"`);
+        await queryRunner.query(`ALTER TABLE "cars" DROP COLUMN "FK_StoreID"`);
+        await queryRunner.query(`ALTER TABLE "cars" DROP COLUMN "SellingPrice"`);
+        await queryRunner.query(`ALTER TABLE "rentals" DROP COLUMN "FK_ClientID"`);
+        await queryRunner.query(`ALTER TABLE "rentals" DROP COLUMN "FK_UserID"`);
+        await queryRunner.query(`ALTER TABLE "rentals" DROP COLUMN "FK_CarID"`);
+        await queryRunner.query(`ALTER TABLE "payments_rentals" DROP CONSTRAINT "PK_73485332a7ced20fee0a54e5931"`);
+        await queryRunner.query(`ALTER TABLE "payments_rentals" ADD CONSTRAINT "PK_4c1c8c31fcb0475896e715dffeb" PRIMARY KEY ("FK_RentalID")`);
+        await queryRunner.query(`ALTER TABLE "payments_rentals" DROP COLUMN "FK_PaymentID"`);
+        await queryRunner.query(`ALTER TABLE "payments_rentals" DROP CONSTRAINT "PK_4c1c8c31fcb0475896e715dffeb"`);
+        await queryRunner.query(`ALTER TABLE "payments_rentals" DROP COLUMN "FK_RentalID"`);
+        await queryRunner.query(`ALTER TABLE "users" DROP COLUMN "FK_StoreID"`);
+        await queryRunner.query(`ALTER TABLE "users" DROP COLUMN "FK_ProfileID"`);
+        await queryRunner.query(`ALTER TABLE "users" DROP COLUMN "Password"`);
+        await queryRunner.query(`ALTER TABLE "cars" ADD "StoreID" uuid`);
+        await queryRunner.query(`ALTER TABLE "rentals" ADD "ClientID" uuid NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "rentals" ADD "UserID" uuid NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "rentals" ADD "CarID" uuid NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "payments_rentals" ADD "PaymentID" uuid NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "payments_rentals" ADD CONSTRAINT "PK_33d33e03fbe38e07de52855a82b" PRIMARY KEY ("PaymentID")`);
+        await queryRunner.query(`ALTER TABLE "payments_rentals" ADD "RentalID" uuid NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "payments_rentals" DROP CONSTRAINT "PK_33d33e03fbe38e07de52855a82b"`);
+        await queryRunner.query(`ALTER TABLE "payments_rentals" ADD CONSTRAINT "PK_f8879a3eebd00791241d3b07d62" PRIMARY KEY ("RentalID", "PaymentID")`);
+        await queryRunner.query(`ALTER TABLE "users" ADD "StoreID" uuid`);
+        await queryRunner.query(`ALTER TABLE "users" ADD "ProfileID" uuid NOT NULL`);
+        await queryRunner.query(`DROP TABLE "clients"`);
+        await queryRunner.query(`DROP TABLE "sales"`);
+        await queryRunner.query(`DROP TABLE "discounts"`);
+        await queryRunner.query(`ALTER TABLE "incidents" RENAME COLUMN "FK_RentalID" TO "RentalID"`);
+        await queryRunner.query(`ALTER TABLE "payments" RENAME COLUMN "FK_ClientID" TO "ClientID"`);
+        await queryRunner.query(`ALTER TABLE "cars" ADD CONSTRAINT "FK_63babc72ff43ced36cfb15e9c97" FOREIGN KEY ("StoreID") REFERENCES "stores"("StoreID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "rentals" ADD CONSTRAINT "FK_50341809270b49a1763d2e93c2e" FOREIGN KEY ("UserID") REFERENCES "users"("UserID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "rentals" ADD CONSTRAINT "FK_a8643c44988d30cfcb29b6ff630" FOREIGN KEY ("ClientID") REFERENCES "client"("ClientID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "rentals" ADD CONSTRAINT "FK_14065c82a4b2e241b70f5f33924" FOREIGN KEY ("CarID") REFERENCES "cars"("CarID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "incidents" ADD CONSTRAINT "FK_e639cd6de57c21662d79c1030c8" FOREIGN KEY ("RentalID") REFERENCES "rentals"("RentalID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "payments_rentals" ADD CONSTRAINT "FK_33d33e03fbe38e07de52855a82b" FOREIGN KEY ("PaymentID") REFERENCES "payments"("PaymentID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "payments_rentals" ADD CONSTRAINT "FK_a54877c278be58722d59183d062" FOREIGN KEY ("RentalID") REFERENCES "rentals"("RentalID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "payments" ADD CONSTRAINT "FK_e2e30f654b7ae3a7c143863044f" FOREIGN KEY ("ClientID") REFERENCES "client"("ClientID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "users" ADD CONSTRAINT "FK_0c9e08eddf6030cf2fb252f4651" FOREIGN KEY ("StoreID") REFERENCES "stores"("StoreID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "users" ADD CONSTRAINT "FK_a02a3246eccebb522baf4929b03" FOREIGN KEY ("ProfileID") REFERENCES "profile"("ProfileID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+    }
+
+}

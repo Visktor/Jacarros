@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export default function zodValidateObject<
+export default function objectValidation<
   O extends { [key: string]: unknown },
   S extends { [K in keyof O]: z.ZodTypeAny }
 >(

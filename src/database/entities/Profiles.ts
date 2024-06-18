@@ -10,6 +10,6 @@ export default class Profile {
   Description: string;
 
   @OneToMany(() => Users, u => u.UserProfile)
-  @JoinColumn({ referencedColumnName: 'ProfileID', name: 'ProfileID'})
+  @JoinColumn({ referencedColumnName: 'FK_ProfileID', name: 'ProfileID'})
   ProfileUsers: Users[]
 }

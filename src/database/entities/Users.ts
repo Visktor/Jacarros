@@ -9,6 +9,7 @@ import {
 import Profile from "./Profiles";
 import Stores from "./Stores";
 import Rentals from "./Rentals";
+import Sales from "./Sales";
 
 @Entity()
 export default class Users {
@@ -25,17 +26,24 @@ export default class Users {
   Password: string;
 
   @Column("uuid")
-  ProfileID: string;
+  FK_ProfileID: string;
+
+  @Column("uuid")
+  FK_StoreID: string;
 
   @ManyToOne(() => Profile, (p) => p.ProfileUsers)
-  @JoinColumn({ referencedColumnName: "ProfileID", name: "ProfileID" })
+  @JoinColumn({ referencedColumnName: "ProfileID", name: "FK_ProfileID" })
   UserProfile: Profile;
 
   @ManyToOne(() => Stores, (s) => s.StoreUsers)
-  @JoinColumn({ referencedColumnName: "StoreID", name: "StoreID" })
+  @JoinColumn({ referencedColumnName: "StoreID", name: "FK_StoreID" })
   UserStore: Stores;
 
   @OneToMany(() => Rentals, (r) => r.RentalUser)
-  @JoinColumn({ referencedColumnName: "UserID", name: "UserID" })
+  @JoinColumn({ referencedColumnName: "FK_UserID", name: "UserID" })
   UserRentals: Rentals[];
+
+  @OneToMany(() => Sales, (s) => s.FK_UserID)
+  @JoinColumn({ name: "UserID", referencedColumnName: "FK_UserID" })
+  Sales: Sales[];
 }
