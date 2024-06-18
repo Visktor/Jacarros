@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "esnext",
+    "target": "ESNext",
     "module": "commonjs",
     "esModuleInterop": true,
     "emitDecoratorMetadata": true,
@@ -12,6 +12,14 @@
     "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
     "resolveJsonModule": true,
     "strict": true,
-    "strictPropertyInitialization": false
+    "strictPropertyInitialization": false,
+    "baseUrl": ".",
+    "paths": {
+      "#database/*": ["./src/database/*"],
+      "#middlewares/*": ["./src/middlewares/*"],
+      "#routes/*": ["./src/routes/*"],
+      "#services/*": ["./src/services/*"],
+      "#shared/*": ["./src/shared/*"]
+    }
   }
 }
